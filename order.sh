@@ -1,0 +1,1 @@
+python simulator.py o

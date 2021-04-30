@@ -1,6 +1,7 @@
 import requests
 import json
 import random
+import sys
 
 def random_order(data):
     order_list=[]
@@ -23,15 +24,23 @@ def random_order(data):
     
     return (order_list)
 
+def fulfill_orders(user_id):
+    response = requests.post(f'http://127.0.0.1:5000/inventory?user_id={user_id}')
+    print("ORDERS_FULFILLED: ", response.status_code)
+
 if __name__ == '__main__':
-    user_id = 'jRD9JUG1fzMP3FoMopfIivfgBh42'
-    response = requests.get(f'http://127.0.0.1:5000/menu-item?user_id={user_id}')
-    print(json.dumps(response.json(), indent=4))
-    data = response.json()['data']
-    # print(data)
-    order_list = random_order(data)
-    order_data = {"payload": order_list}
-    json_send = json.dumps(order_data)
-    print(json_send)
-    response2 = requests.post(f'http://127.0.0.1:5000/order?user_id={user_id}', data=json_send)
-    print(json.dumps(response2.json(), indent=4))
+    which = sys.argv[1]
+    user_id = 'BQ93RVR6vrRS5baWd4LZra6rj103'
+
+    if which == 'o':
+        response = requests.get(f'http://127.0.0.1:5000/menu-item?user_id={user_id}')
+        print(json.dumps(response.json(), indent=4))
+        data = response.json()['data']
+        order_list = random_order(data)
+        order_data = {"payload": order_list}
+        json_send = json.dumps(order_data)
+        print(json_send)
+        response2 = requests.post(f'http://127.0.0.1:5000/order?user_id={user_id}', data=json_send)
+        print(json.dumps(response2.json(), indent=4))
+    elif which == 'f':
+        fulfill_orders(user_id)
